@@ -11,7 +11,8 @@ import selectionModule from 'lib/features/selection';
 import { getMid } from 'lib/layout/LayoutUtil';
 
 import {
-  deconflictPosition,
+  findFreePosition,
+  generateGetNextPosition,
   getConnectedAtPosition,
   getConnectedDistance
 } from 'lib/features/auto-place/AutoPlaceUtil';
@@ -176,9 +177,9 @@ describe('features/auto-place', function() {
 
   describe('util', function() {
 
-    describe('#deconflictPosition', function() {
+    describe('#findFreePosition', function() {
 
-      it('should not have to deconflict', inject(function(modeling) {
+      it('should not have to find another position', inject(function(modeling) {
 
         // given
         var position = {
@@ -186,24 +187,25 @@ describe('features/auto-place', function() {
           y: 50
         };
 
-        var escapeDirection = {
+        var nextPositionDirection = {
           y: {
             margin: 50,
-            rowSize: 50
+            minDistance: 50
           }
         };
 
         // when
-        var deconflictedPosition = deconflictPosition(shape, newShape, position, escapeDirection);
+        var freePosition =
+          findFreePosition(shape, newShape, position, generateGetNextPosition(nextPositionDirection));
 
-        modeling.appendShape(shape, newShape, deconflictedPosition);
+        modeling.appendShape(shape, newShape, freePosition);
 
         // then
-        expect(deconflictedPosition).to.eql(position);
+        expect(freePosition).to.eql(position);
       }));
 
 
-      it('should deconflict once', inject(function(autoPlace, elementFactory, modeling) {
+      it('should find another position', inject(function(autoPlace, elementFactory, modeling) {
 
         // given
         var shape1 = elementFactory.createShape({
@@ -219,20 +221,21 @@ describe('features/auto-place', function() {
           y: 50
         };
 
-        var escapeDirection = {
+        var nextPositionDirection = {
           y: {
             margin: 50,
-            rowSize: 50
+            minDistance: 50
           }
         };
 
         // when
-        var deconflictedPosition = deconflictPosition(shape, newShape, position, escapeDirection);
+        var freePosition =
+          findFreePosition(shape, newShape, position, generateGetNextPosition(nextPositionDirection));
 
-        modeling.appendShape(shape, newShape, deconflictedPosition);
+        modeling.appendShape(shape, newShape, freePosition);
 
         // then
-        expect(deconflictedPosition).to.eql({
+        expect(freePosition).to.eql({
           x: 200,
           y: 200
         });
