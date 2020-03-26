@@ -56,9 +56,11 @@ function visualizeActual(canvas, point) {
 
 function expectDockingPoint(connection, shape, expected) {
   return getDiagramJS().invoke(function(canvas, connectionDocking) {
+    var waypoints = connection.waypoints;
 
     var cropStart = shape === connection.source;
-    var dockingPoint = connectionDocking.getDockingPoint(connection, shape, cropStart);
+
+    var dockingPoint = connectionDocking.getDockingPoint(waypoints, shape, cropStart);
 
     visualizeExpected(canvas, expected.actual);
     visualizeActual(canvas, dockingPoint.actual);
