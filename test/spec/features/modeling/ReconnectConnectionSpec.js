@@ -156,7 +156,13 @@ describe('features/modeling - reconnect connection', function() {
 
         // then
         expect(layoutSpy).to.have.been.calledOnce;
-        expect(layoutSpy.getCall(0).args).to.eql([ connection, { connectionStart: docking }]);
+        expect(layoutSpy.getCall(0).args).to.eql([
+          connection,
+          {
+            connectionStart: docking,
+            docking: 'source'
+          }
+        ]);
 
       }));
 
@@ -221,7 +227,13 @@ describe('features/modeling - reconnect connection', function() {
 
         // then
         expect(layoutSpy).to.have.been.calledOnce;
-        expect(layoutSpy.getCall(0).args).to.eql([ connection, { connectionStart: docking }]);
+        expect(layoutSpy.getCall(0).args).to.eql([
+          connection,
+          {
+            connectionStart: docking,
+            docking: 'source'
+          }
+        ]);
 
       }));
 
@@ -290,7 +302,13 @@ describe('features/modeling - reconnect connection', function() {
 
         // then
         expect(layoutSpy).to.have.been.calledOnce;
-        expect(layoutSpy.getCall(0).args).to.eql([ connection, { connectionEnd: docking }]);
+        expect(layoutSpy.getCall(0).args).to.eql([
+          connection,
+          {
+            connectionEnd: docking,
+            docking: 'target'
+          }
+        ]);
 
       }));
 
@@ -355,11 +373,49 @@ describe('features/modeling - reconnect connection', function() {
 
         // then
         expect(layoutSpy).to.have.been.calledOnce;
-        expect(layoutSpy.getCall(0).args).to.eql([ connection, { connectionEnd: docking }]);
+        expect(layoutSpy.getCall(0).args).to.eql([
+          connection,
+          {
+            connectionEnd: docking,
+            docking: 'target'
+          }
+        ]);
 
       }));
 
     });
+
+  });
+
+
+  describe('hints', function() {
+
+    it('should accept layout hints', inject(function(modeling) {
+
+      // when
+      modeling.reconnect(connection, childShape, connection.target, connection.waypoints, {
+        connectionStart: {
+          x: 0,
+          y: 0
+        },
+        connectionEnd: {
+          x: 100,
+          y: 100
+        }
+      });
+
+      // then
+      expect(connection.waypoints).to.eql([
+        {
+          x: 0,
+          y: 0
+        },
+        {
+          x: 100,
+          y: 100
+        }
+      ]);
+    }));
 
   });
 
